@@ -1,9 +1,9 @@
-importScripts('kryptos/kryptos.js',
+/*importScripts('kryptos/kryptos.js',
               'kryptos/PublicKey/RSA.js',
               'common.js',
               'python_shim.js',
               'BigInteger.js',
-              'util.js');
+              'util.js');*/
 
 onmessage = function(event) {
   var rsa = new kryptos.publicKey.RSA().construct(new BigInteger(event.data.n, 10),

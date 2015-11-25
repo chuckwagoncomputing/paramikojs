@@ -116,7 +116,7 @@ paramikojs.SSHClient = function () {
   this._agent = null;
 
   this._observer = null;
-}
+};
 
 paramikojs.SSHClient.prototype = {
 	SSH_PORT : 22,
@@ -264,7 +264,8 @@ paramikojs.SSHClient.prototype = {
             key_filename, timeout, allow_agent, look_for_keys,
             compress) {
     port = port || this.SSH_PORT;
-    allow_agent = allow_agent == undefined ? true : allow_agent;
+    allow_agent = false;
+//    allow_agent = allow_agent == undefined ? true : allow_agent;
     look_for_keys = look_for_keys == undefined ? true : look_for_keys;
 
     var self = this;
@@ -291,17 +292,9 @@ paramikojs.SSHClient.prototype = {
           return;
         }
 
-        var key_filenames;
-        if (!key_filename) {
-          key_filenames = [];
-        } else if (typeof key_filename == "string") {
-          key_filenames = [ key_filename ];
-        } else {
-          key_filenames = key_filename;
-        }
-        self._auth(username, password, pkey, key_filenames, allow_agent, look_for_keys);
+        self._auth(username, password, pkey, null, false, false);
       };
-
+/*
       if (!our_server_key) {
         // will raise exception if the key is rejected; let that fall out
         self._policy.missing_host_key(self, server_hostkey_name, server_key, cacheCallback);
@@ -312,7 +305,8 @@ paramikojs.SSHClient.prototype = {
         // if the callback returns, assume the key is ok
       } else {
         cacheCallback(true);
-      }
+      }*/
+cacheCallback(true);
     };
 
     this._observer = observer;
@@ -442,7 +436,7 @@ paramikojs.SSHClient.prototype = {
       }
     }
 
-    for (var y = 0; y < key_filenames.length; ++y) {
+/*    for (var y = 0; y < key_filenames.length; ++y) {
       for (var x = 0; x < 2; ++x) {
         try {
           var pkey_class = [paramikojs.RSAKey, paramikojs.DSSKey][x];
@@ -496,7 +490,7 @@ paramikojs.SSHClient.prototype = {
       } catch(ex) {
         saved_exception = ex;
       }
-    }
+    }*/
 
     if (password) {
       try {
