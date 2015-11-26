@@ -13,7 +13,7 @@ paramikojs.AutoAddPolicy.prototype = {
       client.save_host_keys(client._host_keys_filename);
     }
     debug('Adding ' + key.get_name() + ' host key for ' + hostname + ': ' + paramikojs.util.hexify(key.get_fingerprint()));
-
+    
     callback(true);
   }
 };
@@ -264,8 +264,7 @@ paramikojs.SSHClient.prototype = {
             key_filename, timeout, allow_agent, look_for_keys,
             compress) {
     port = port || this.SSH_PORT;
-    allow_agent = false;
-//    allow_agent = allow_agent == undefined ? true : allow_agent;
+    allow_agent = allow_agent == undefined ? true : allow_agent;
     look_for_keys = look_for_keys == undefined ? true : look_for_keys;
 
     var self = this;
@@ -292,9 +291,17 @@ paramikojs.SSHClient.prototype = {
           return;
         }
 
-        self._auth(username, password, pkey, null, false, false);
+        var key_filenames;
+        if (!key_filename) {
+          key_filenames = [];
+        } else if (typeof key_filename == "string") {
+          key_filenames = [ key_filename ];
+        } else {
+          key_filenames = key_filename;
+        }
+        self._auth(username, password, pkey, key_filenames, allow_agent, look_for_keys);
       };
-/*
+
       if (!our_server_key) {
         // will raise exception if the key is rejected; let that fall out
         self._policy.missing_host_key(self, server_hostkey_name, server_key, cacheCallback);
@@ -305,8 +312,7 @@ paramikojs.SSHClient.prototype = {
         // if the callback returns, assume the key is ok
       } else {
         cacheCallback(true);
-      }*/
-cacheCallback(true);
+      }
     };
 
     this._observer = observer;
@@ -436,7 +442,7 @@ cacheCallback(true);
       }
     }
 
-/*    for (var y = 0; y < key_filenames.length; ++y) {
+    for (var y = 0; y < key_filenames.length; ++y) {
       for (var x = 0; x < 2; ++x) {
         try {
           var pkey_class = [paramikojs.RSAKey, paramikojs.DSSKey][x];
@@ -468,8 +474,11 @@ cacheCallback(true);
     }
 
     var keyfiles = [];
-    var rsa_key = localFile.init('~/.ssh/id_rsa');
-    var dsa_key = localFile.init('~/.ssh/id_dsa');
+    var rsa_key, dsa_key;
+    if (Components && Components.classes) {
+      var rsa_key = localFile.init('~/.ssh/id_rsa');
+      var dsa_key = localFile.init('~/.ssh/id_dsa');
+    }
     if (rsa_key && rsa_key.exists()) {
       keyfiles.push([paramikojs.RSAKey, rsa_key]);
     }
@@ -490,7 +499,7 @@ cacheCallback(true);
       } catch(ex) {
         saved_exception = ex;
       }
-    }*/
+    }
 
     if (password) {
       try {

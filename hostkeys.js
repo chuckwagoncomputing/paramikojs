@@ -138,7 +138,7 @@ paramikojs.HostKeys.prototype = {
       is.init(fstream, charset, 1024, 0xFFFD);
       is.QueryInterface(Components.interfaces.nsIUnicharLineInputStream);
       this.loadHelper(is);
-    } else {  // Chrome
+    } else if (chrome) {  // Chrome
       var self = this;
       chrome.storage.local.get("host_keys", function(value) {
         is = value.host_keys || '';
