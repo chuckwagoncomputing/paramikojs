@@ -284,7 +284,7 @@ paramikojs.SSHClient.prototype = {
       if (!our_server_key && self._host_keys._entries.length) {
         our_server_key = self._host_keys.get(server_hostkey_name)[keytype];
       }
-
+      
       var cacheCallback = function(accepted) {
         if (!accepted) {
           self.close(true);
