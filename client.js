@@ -13,7 +13,7 @@ paramikojs.AutoAddPolicy.prototype = {
       client.save_host_keys(client._host_keys_filename);
     }
     debug('Adding ' + key.get_name() + ' host key for ' + hostname + ': ' + paramikojs.util.hexify(key.get_fingerprint()));
-    
+
     callback(true);
   }
 };
@@ -284,7 +284,7 @@ paramikojs.SSHClient.prototype = {
       if (!our_server_key && self._host_keys._entries.length) {
         our_server_key = self._host_keys.get(server_hostkey_name)[keytype];
       }
-      
+
       var cacheCallback = function(accepted) {
         if (!accepted) {
           self.close(true);
