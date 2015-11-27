@@ -39,7 +39,7 @@ paramikojs.DSSKey = function(msg, data, filename, password, vals, file_obj) {
     this.y = msg.get_mpint();
   }
   this.size = paramikojs.util.bit_length(this.p);
-}
+};
 
 paramikojs.DSSKey.prototype = {
   toString : function() {
@@ -80,7 +80,7 @@ paramikojs.DSSKey.prototype = {
   },
 
   can_sign : function() {
-    return this.x != null;
+    return this.x !== null;
   },
 
   sign_ssh_data : function(rng, data, callback) {
@@ -211,7 +211,7 @@ paramikojs.DSSKey.prototype = {
     } catch(ex) {
       throw new paramikojs.ssh_exception.SSHException('Unable to parse key file');
     }
-    if (!(keylist instanceof Array) || keylist.length < 6 || keylist[0] != 0) {
+    if (!(keylist instanceof Array) || keylist.length < 6 || keylist[0] !== 0) {
       throw new paramikojs.ssh_exception.SSHException('not a valid DSA private key file (bad ber encoding)');
     }
     this.p = keylist[1];

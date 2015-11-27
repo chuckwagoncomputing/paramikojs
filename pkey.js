@@ -18,7 +18,7 @@ paramikojs.PKey = function(msg, data) {
   @raise SSHException: if a key cannot be created from the C{data} or
   C{msg} given, or no key was passed in.
 */
-}
+};
 
 paramikojs.PKey.prototype = {
   // known encryption types for private key files:
@@ -253,13 +253,13 @@ paramikojs.PKey.prototype = {
         var str = {};
         read = cstream.readString(0xffffffff, str); // read as much as we can and put it in str.value
         lines += str.value;
-      } while (read != 0);
+      } while (read !== 0);
       cstream.close(); // this closes fstream
     }
 
     lines = lines.indexOf('\r\n') != -1 ? lines.split('\r\n') : lines.split('\n');
 
-    if (lines.length && lines[0].indexOf("PuTTY-User-Key-File-") == 0) {
+    if (lines.length && lines[0].indexOf("PuTTY-User-Key-File-") === 0) {
       throw new paramikojs.ssh_exception.IsPuttyKey("puttykey", lines);
     }
 
@@ -315,9 +315,9 @@ paramikojs.PKey.prototype = {
     if (!password) {
       throw new paramikojs.ssh_exception.PasswordRequiredException('Private key file is encrypted');
     }
-    var cipher = this._CIPHER_TABLE[encryption_type]['cipher'];
-    var keysize = this._CIPHER_TABLE[encryption_type]['keysize'];
-    var mode = this._CIPHER_TABLE[encryption_type]['mode'];
+    var cipher = this._CIPHER_TABLE[encryption_type].cipher;
+    var keysize = this._CIPHER_TABLE[encryption_type].keysize;
+    var mode = this._CIPHER_TABLE[encryption_type].mode;
     var salt = paramikojs.util.unhexify(saltstr);
     var key = paramikojs.util.generate_key_bytes(kryptos.hash.MD5, salt, password, keysize);
     return new cipher(key, mode, salt).decrypt(data);
@@ -389,7 +389,7 @@ paramikojs.PKey.prototype = {
       throw new paramikojs.ssh_exception.SSHException('not a valid ' + tag + ' private key file');
     }
 
-    var encrypted = headers["Encryption"] == "aes256-cbc";
+    var encrypted = headers.Encryption == "aes256-cbc";
     var publicKey = base64.decodestring(payload["Public-Lines"]);
     var privateLines = base64.decodestring(payload["Private-Lines"]);
 
@@ -512,10 +512,10 @@ paramikojs.PKey.prototype = {
     if (password) {
       // since we only support one cipher here, use it
       var cipher_name = this._CIPHER_TABLE.keys()[0];
-      var cipher = this._CIPHER_TABLE[cipher_name]['cipher'];
-      var keysize = this._CIPHER_TABLE[cipher_name]['keysize'];
-      var blocksize = this._CIPHER_TABLE[cipher_name]['blocksize'];
-      var mode = this._CIPHER_TABLE[cipher_name]['mode'];
+      var cipher = this._CIPHER_TABLE[cipher_name].cipher;
+      var keysize = this._CIPHER_TABLE[cipher_name].keysize;
+      var blocksize = this._CIPHER_TABLE[cipher_name].blocksize;
+      var mode = this._CIPHER_TABLE[cipher_name].mode;
       var salt = paramikojs.rng.read(8);
       var key = paramikojs.util.generate_key_bytes(kryptos.hash.MD5, salt, password, keysize);
       if (data.length % blocksize != 0) {

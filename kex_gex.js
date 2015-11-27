@@ -13,7 +13,7 @@ paramikojs.KexGex = function(transport) {
   this.e = null;
   this.f = null;
   this.old_style = false;
-}
+};
 
 
 paramikojs.KexGex._MSG_KEXDH_GEX_REQUEST_OLD = 30;

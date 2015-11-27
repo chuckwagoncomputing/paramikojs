@@ -43,7 +43,7 @@ paramikojs.transport = function(observer) {
   this.global_response = null;     // response Message from an arbitrary global request
   this.completion_event = null;    // user-defined event callbacks
   this.banner_timeout = 15;        // how long (seconds) to wait for the SSH banner
-}
+};
 
 paramikojs.transport.prototype = {
   fullBuffer : '',
@@ -87,14 +87,14 @@ paramikojs.transport.prototype = {
   },
 
   _key_info : {
-    'ssh-rsa': function(msg) { return new paramikojs.RSAKey(msg) },
-    'ssh-dss': function(msg) { return new paramikojs.DSSKey(msg) }
+    'ssh-rsa': function(msg) { return new paramikojs.RSAKey(msg); },
+    'ssh-dss': function(msg) { return new paramikojs.DSSKey(msg); }
   },
 
   _kex_info : {
-    'diffie-hellman-group1-sha1': function(self) { return new paramikojs.KexGroup1(self) },
-    'diffie-hellman-group14-sha1': function(self) { return new paramikojs.KexGroup14(self) },
-    'diffie-hellman-group-exchange-sha1': function(self) { return new paramikojs.KexGex(self) }
+    'diffie-hellman-group1-sha1': function(self) { return new paramikojs.KexGroup1(self); },
+    'diffie-hellman-group14-sha1': function(self) { return new paramikojs.KexGroup14(self); },
+    'diffie-hellman-group-exchange-sha1': function(self) { return new paramikojs.KexGex(self); }
   },
 
   _compression_info : {
@@ -313,7 +313,7 @@ paramikojs.transport.prototype = {
     if (!response) {
       throw new paramikojs.ssh_exception.SSHException('TCP forwarding request denied');
     }
-    if (port == 0) {
+    if (port === 0) {
       port = response.get_int();
     }
     if (!handler) {
@@ -514,7 +514,7 @@ paramikojs.transport.prototype = {
             if (fields.length > 1) {
               throw new paramikojs.ssh_exception.SSHException('Fallback authentication failed.');
             }
-            if (fields.length == 0) {
+            if (fields.length === 0) {
               // for some reason, at least on os x, a 2nd request will
               // be made with zero fields requested.  maybe it's just
               // to try to fake out automated scripting of the exact
