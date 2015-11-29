@@ -394,13 +394,13 @@ paramikojs.AuthHandler.prototype = {
   },
 
   _handler_table : {
-    5: function(self, m) { self._parse_service_request(m) },
-    6: function(self, m) { self._parse_service_accept(m) },
-    50: function(self, m) { self._parse_userauth_request(m) },
-    51: function(self, m) { self._parse_userauth_failure(m) },
-    52: function(self, m) { self._parse_userauth_success(m) },
-    53: function(self, m) { self._parse_userauth_banner(m) },
-    60: function(self, m) { self._parse_userauth_info_request(m) },
-    61: function(self, m) { self._parse_userauth_info_response(m) }
+    5: function(self, m) { self._parse_service_request(m); },
+    6: function(self, m) { self._parse_service_accept(m); },
+    50: function(self, m) { self._parse_userauth_request(m); },
+    51: function(self, m) { self._parse_userauth_failure(m); },
+    52: function(self, m) { self._parse_userauth_success(m); },
+    53: function(self, m) { self._parse_userauth_banner(m); },
+    60: function(self, m) { self._parse_userauth_info_request(m); },
+    61: function(self, m) { self._parse_userauth_info_response(m); }
   }  
 };

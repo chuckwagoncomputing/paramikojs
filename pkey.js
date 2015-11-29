@@ -236,16 +236,14 @@ paramikojs.PKey.prototype = {
     var data = this._read_private_key(tag, file, password);
     return data;
   },
-
-  _read_private_key : function(tag, f, password) {
+  
+  _read_private_key : function(tag, file, password) {
     var lines;
-    if (!(Components && Components.classes)) {  // Chrome
-      lines = gKeys[f];
-    } else {
+    if (Components && Components.classes) {  // Chrome
       lines = "";
       var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
       var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].createInstance(Components.interfaces.nsIConverterInputStream);
-      fstream.init(f, -1, 0, 0);
+      fstream.init(file, -1, 0, 0);
       cstream.init(fstream, "UTF-8", 0, 0); // you can use another encoding here if you wish
 
       var read = 0;
@@ -256,25 +254,28 @@ paramikojs.PKey.prototype = {
       } while (read !== 0);
       cstream.close(); // this closes fstream
     }
+    return this._read_private_key_tring(tag, lines, password);
+  },
 
-    lines = lines.indexOf('\r\n') != -1 ? lines.split('\r\n') : lines.split('\n');
+  _read_private_key_string : function(tag, string, password) {
+    string = string.indexOf('\r\n') != -1 ? string.split('\r\n') : string.split('\n');
 
-    if (lines.length && lines[0].indexOf("PuTTY-User-Key-File-") === 0) {
-      throw new paramikojs.ssh_exception.IsPuttyKey("puttykey", lines);
+    if (string.length && string[0].indexOf("PuTTY-User-Key-File-") === 0) {
+      throw new paramikojs.ssh_exception.IsPuttyKey("puttykey", string);
     }
 
     var start = 0;
-    while (start < lines.length && (lines[start].trim() != '-----BEGIN ' + tag + ' PRIVATE KEY-----')) {
+    while (start < string.length && (string[start].trim() != '-----BEGIN ' + tag + ' PRIVATE KEY-----')) {
       start += 1;
     }
-    if (start >= lines.length) {
+    if (start >= string.length) {
       throw new paramikojs.ssh_exception.SSHException('not a valid ' + tag + ' private key file');
     }
     // parse any headers first
     var headers = {};
     start += 1;
-    while (start < lines.length) {
-      var l = lines[start].split(': ');
+    while (start < string.length) {
+      var l = string[start].split(': ');
       if (l.length == 1) {
         break;
       }
@@ -283,13 +284,14 @@ paramikojs.PKey.prototype = {
     }
     // find end
     var end = start;
-    while ((lines[end].trim() != '-----END ' + tag + ' PRIVATE KEY-----') && end < lines.length) {
+    while ((string[end].trim() != '-----END ' + tag + ' PRIVATE KEY-----') && end < string.length) {
       end += 1;
     }
+
     // if we trudged to the end of the file, just try to cope.
     var data;
     try {
-      data = base64.decodestring(lines.slice(start, end).join(''));
+      data = base64.decodestring(string.slice(start, end).join(''));
     } catch (ex) {
       throw new paramikojs.ssh_exception.SSHException('base64 decoding error: ' + ex.toString());
     }

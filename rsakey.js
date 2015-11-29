@@ -2,7 +2,7 @@
   Representation of an RSA key which can be used to sign and verify SSH2
   data.
 */
-paramikojs.RSAKey = function(msg, data, filename, password, vals, file_obj) {
+paramikojs.RSAKey = function(msg, data, filename, password, vals, file_obj, string) {
   inherit(this, new paramikojs.PKey());
 
   this.n = null;
@@ -14,23 +14,28 @@ paramikojs.RSAKey = function(msg, data, filename, password, vals, file_obj) {
     this._from_private_key(file_obj, password);
     return;
   }
-  if (filename) {
+  else if (filename) {
     this._from_private_key_file(filename, password);
     return;
   }
-  if (!msg && data) {
+  else if (!msg && data) {
     msg = new paramikojs.Message(data);
   }
-  if (vals) {
+  else if (vals) {
     this.e = vals[0];
     this.n = vals[1];
-  } else {
-    if (!msg) {
-      throw new paramikojs.ssh_exception.SSHException('Key object may not be empty');
-    }
-    if (msg.get_string() != 'ssh-rsa') {
-      throw new paramikojs.ssh_exception.SSHException('Invalid key');
-    }
+  }
+  else if (string) {
+    this._from_private_key_string(string, password);
+    return;
+  }
+  if (!msg) {
+    throw new paramikojs.ssh_exception.SSHException('Key object may not be empty');
+  }
+  else if (msg.get_string() != 'ssh-rsa') {
+    throw new paramikojs.ssh_exception.SSHException('Invalid key');
+  }
+  else {
     this.e = msg.get_mpint();
     this.n = msg.get_mpint();
   }
@@ -181,6 +186,11 @@ paramikojs.RSAKey.prototype = {
 
   _from_private_key : function(file_obj, password) {
     var data = this._read_private_key('RSA', file_obj, password);
+    this._decode_key(data);
+  },
+  
+  _from_private_key_string : function(string, password) {
+    var data = this._read_private_key_string('RSA', string, password);
     this._decode_key(data);
   },
 
